@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarSeparator,
-  SidebarTrigger,
 } from "@components/ui/sidebar";
 import Link from "next/link";
 import { Home, Users, BarChart2 } from "lucide-react";
@@ -25,23 +24,27 @@ export default function AppSidebar() {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader className="p-4 font-bold">LOGO</SidebarHeader>
+        <SidebarHeader className="p-4 font-bold text-lg text-center">LOGO</SidebarHeader>
         <SidebarSeparator />
+
         <SidebarContent>
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.name}>
-                <Link href={item.href}>
-                  <SidebarMenuButton tooltip={item.name} isActive={false}>
+                <SidebarMenuButton asChild tooltip={item.name}>
+                  <Link href={item.href} className="flex items-center gap-2">
                     {item.icon}
                     <span>{item.name}</span>
-                  </SidebarMenuButton>
-                </Link>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarContent>
-  
+
+        <SidebarFooter className="p-4 text-sm text-center text-gray-500">
+          © 2025 FullStack App
+        </SidebarFooter>
       </Sidebar>
     </SidebarProvider>
   );

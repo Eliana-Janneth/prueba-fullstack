@@ -10,12 +10,12 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    // <ApolloProvider client={client}>
-    //   <SessionProvider session={session}>
+    <ApolloProvider client={client}>
+      <SessionProvider session={session}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
-    //   </SessionProvider>
-    // </ApolloProvider>
+      </SessionProvider>
+    </ApolloProvider>
   );
 }

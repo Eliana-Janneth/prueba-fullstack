@@ -1,20 +1,16 @@
-"use client";
+'use client';
 
-import { useQuery, gql } from "@apollo/client";
-
-const GET_MOVEMENTS = gql`
-  query GetMovements {
-    movements {
-      id
-      concept
-      amount
-      date
-      user {
-        name
-      }
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { GET_MOVEMENTS } from '@hooks/query/movements';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
 
 export default function MovementsTable() {
   const { data, loading, error } = useQuery(GET_MOVEMENTS);
@@ -23,25 +19,34 @@ export default function MovementsTable() {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <table className="w-full border border-gray-200">
-      <thead>
-        <tr>
-          <th>Concepto</th>
-          <th>Monto</th>
-          <th>Fecha</th>
-          <th>Usuario</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table>
+      <TableHeader>
+        <TableRow className=''>
+          <TableHead className='w-[400px]'>Concepto</TableHead>
+          <TableHead>Monto</TableHead>
+          <TableHead>Fecha</TableHead>
+          <TableHead className=''>Usuario</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {data.movements.map((m: any) => (
-          <tr key={m.id}>
-            <td>{m.concept}</td>
-            <td>${m.amount}</td>
-            <td>{new Date(m.date).toLocaleDateString()}</td>
-            <td>{m.user.name}</td>
-          </tr>
+          <TableRow key={m.id}>
+            <TableCell className='font-medium'>{m.concept}</TableCell>
+            <TableCell>{m.amount}</TableCell>
+            <TableCell>
+              {new Intl.DateTimeFormat('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              }).format(new Date(Number(m.date)))}
+            </TableCell>
+            <TableCell>{m.user.name}</TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }
