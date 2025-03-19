@@ -1,9 +1,8 @@
-
 import { gql } from "@apollo/client";
 
 export const GET_MOVEMENTS = gql`
-  query GetMovements {
-    movements {
+  query GetMovements($type: String, $skip: Int, $take: Int) {
+    movements(type: $type, skip: $skip, take: $take) {
       id
       concept
       amount
@@ -13,19 +12,20 @@ export const GET_MOVEMENTS = gql`
         name
       }
     }
+    movementsCount
   }
 `;
 
 export const GET_MOVEMENT = gql`
-    query GetMovement($id: ID!) {
-        movement(id: $id) {
-        id
-        concept
-        amount
-        date
-        user {
-            name
-        }
-        }
+  query GetMovement($id: ID!) {
+    movement(id: $id) {
+      id
+      concept
+      amount
+      date
+      user {
+        name
+      }
     }
-    `;
+  }
+`;

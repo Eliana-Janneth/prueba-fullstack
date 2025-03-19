@@ -10,9 +10,10 @@ const Movement = gql`
     user: User!
   }
 
- type Query {
-  movements(type: String): [Movement!]!
-}
+  type Query {
+    movements(type: String, skip: Int, take: Int): [Movement!]!
+    movementsCount(type: String): Int!
+  }
 
   type Mutation {
     addMovement(concept: String!, amount: Float!, type:String!, userId: String!): Movement
