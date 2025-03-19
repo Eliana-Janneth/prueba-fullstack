@@ -5,7 +5,6 @@ import { GET_MOVEMENTS } from '@hooks/query/movements';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
