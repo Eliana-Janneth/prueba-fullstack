@@ -1,49 +1,47 @@
-import { ApolloServer } from "@apollo/server";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { gql } from "graphql-tag";
-import prisma from "@/lib/prisma";
+import { ApolloServer } from 'apollo-server-micro';
+import { customTypes } from "@graphql/types";
+import { customResolvers } from "@graphql/resolvers";
+import { MicroRequest } from "apollo-server-micro/dist/types";
+import { PrismaClient } from "@prisma/client";
+import Cors from "micro-cors";
+import { ServerResponse, IncomingMessage } from "http";
+import prisma from "@lib/prisma";
 
-const typeDefs = gql`
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    phone: String
-    role: String!
-  }
+const cors = Cors({
+  allowMethods: ['POST', 'OPTIONS', 'GET', 'HEAD'],
+});
 
-  type Movement {
-    id: ID!
-    concept: String!
-    amount: Float!
-    date: String!
-    user: User!
-  }
+interface Context {
+  prisma: PrismaClient;
+}
 
-  type Query {
-    users: [User]
-    movements: [Movement]
-  }
-
-  type Mutation {
-    addMovement(concept: String!, amount: Float!, userId: String!): Movement
-  }
-`;
-
-const resolvers = {
-  Query: {
-    users: async () => await prisma.user.findMany(),
-    movements: async () => await prisma.movement.findMany({ include: { user: true } }),
-  },
-  Mutation: {
-    addMovement: async (_: any, { concept, amount, userId }: any) => {
-      return await prisma.movement.create({
-        data: { concept, amount, userId },
-      });
-    },
+export const config = {
+  api: {
+    bodyParser: false,
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const functionHandler = async (req: MicroRequest, res: ServerResponse<IncomingMessage>) => {
+  const apolloServer = new ApolloServer({
+    context: (): Context => ({ prisma }),
+    typeDefs: [...customTypes],
+    resolvers: [...customResolvers],
+    persistedQueries: false, // This disables persisted queries
+    cache: 'bounded', // This sets up a bounded cache
+    introspection: process.env.NODE_ENV !== 'production',
+  });
+  const startServer = apolloServer.start();
+  await startServer;
+  return apolloServer.createHandler({
+    path: '/api/graphql',
+  })(req, res);
+};
 
-export default startServerAndCreateNextHandler(server);
+export default cors((req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.end();
+    return false;
+  }
+
+  return functionHandler(req, res);
+});

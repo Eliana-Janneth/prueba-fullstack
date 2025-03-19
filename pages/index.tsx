@@ -1,3 +1,5 @@
+
 export default function Home() {
-  return <main>hello world</main>;
-}
+  return (
+        <h1 className="text-5xl text-red-600 bg-gray-400">Bienvenido</h1>
+  )}
