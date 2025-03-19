@@ -8,6 +8,7 @@ export const GET_MOVEMENTS = gql`
       concept
       amount
       date
+      type
       user {
         name
       }

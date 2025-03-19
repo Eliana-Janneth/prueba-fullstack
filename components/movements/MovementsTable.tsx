@@ -24,6 +24,7 @@ export default function MovementsTable() {
           <TableHead className='w-[400px]'>Concepto</TableHead>
           <TableHead>Monto</TableHead>
           <TableHead>Fecha</TableHead>
+          <TableHead>Tipo de Movimiento</TableHead>
           <TableHead className=''>Usuario</TableHead>
         </TableRow>
       </TableHeader>
@@ -42,6 +43,7 @@ export default function MovementsTable() {
                 second: '2-digit',
               }).format(new Date(Number(m.date)))}
             </TableCell>
+            <TableCell>{m.type}</TableCell>
             <TableCell>{m.user.name}</TableCell>
           </TableRow>
         ))}
