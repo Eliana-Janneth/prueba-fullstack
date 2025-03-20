@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 
 export const GET_FINANCIAL_SUMMARY = gql`
   query GetFinancialSummary {
-    incomes: movements(type: "income") {
+    incomes: movements(type: "INCOME") {
       amount
     }
-    expenses: movements(type: "expense") {
+    expenses: movements(type: "EXPENSE") {
       amount
     }
     movements {

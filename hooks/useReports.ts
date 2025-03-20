@@ -20,9 +20,9 @@ export function useReports() {
         acc[monthKey] = { income: 0, expense: 0 };
       }
 
-      if (movement.type === "income") {
+      if (movement.type === "INCOME") {
         acc[monthKey].income += Number(movement.amount);
-      } else if (movement.type === "expense") {
+      } else if (movement.type === "EXPENSE") {
         acc[monthKey].expense += Number(movement.amount);
       }
 
