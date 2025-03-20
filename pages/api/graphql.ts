@@ -6,6 +6,9 @@ import Cors from "micro-cors";
 import prisma from "@lib/prisma";
 import { IncomingMessage, ServerResponse } from "http";
 import { MicroRequest } from "apollo-server-micro/dist/types";
+import { NextApiRequest } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 // Configuration of CORS for the API
 const cors = Cors({
@@ -25,7 +28,14 @@ export const config = {
     bodyParser: false,
   },
 };
+async function createContext({ req, res }: { req: NextApiRequest; res: ServerResponse }) {
+  const session = await getServerSession(req, res, authOptions);
 
+  return {
+    prisma, // Database connection
+    session, // Authenticated user session
+  };
+}
 /**
  * Handles GraphQL API requests using Apollo Server.
  * Ensures the server is only instantiated once.
@@ -33,7 +43,7 @@ export const config = {
 async function getApolloServer() {
   if (!apolloServer) {
     apolloServer = new ApolloServer({
-      context: (): Context => ({ prisma }),
+      context: ({ req, res }) => createContext({ req, res }),
       typeDefs: [...customTypes],
       resolvers: [...customResolvers],
       persistedQueries: false, // Disable persisted queries
@@ -41,12 +51,12 @@ async function getApolloServer() {
       introspection: process.env.NODE_ENV !== "production", //Enable introspection in development mode
     });
 
-    await apolloServer.start(); 
+    await apolloServer.start();
   }
   return apolloServer;
 }
 
-
+// Handles API requests and routes them to Apollo Server.
 export default cors(async function handler(req: MicroRequest, res: ServerResponse<IncomingMessage>) {
   if (req.method === "OPTIONS") {
     res.end();

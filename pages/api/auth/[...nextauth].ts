@@ -3,7 +3,7 @@ import Auth0Provider from "next-auth/providers/auth0";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client"; 
+import { Role } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 
@@ -82,6 +82,9 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      return baseUrl
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

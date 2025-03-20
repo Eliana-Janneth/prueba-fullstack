@@ -1,8 +1,10 @@
+import { MovementType, Role } from "@prisma/client";
+
 export interface Movement {
   id: string;
   concept: string;
   amount: number;
-  type: "income" | "expense";
+  type: MovementType;
   date: string;
   user: User;
 }
@@ -26,14 +28,14 @@ export interface MovementQueryData {
 export interface CreateMovement {
   concept: string;
   amount: number;
-  type: "income" | "expense";
+  type: MovementType
   userId: string
 }
 
 export interface UpdateUser {
   input: {
     name: string;
-    role: "USER" | "ADMIN";
+    role: Role
     id: string;
   }
 
@@ -43,7 +45,7 @@ export interface userDataProps {
   connection?: string,
   password: string;
   name: string;
-  phone?:string;
+  phone?: string;
 }
 
 export interface AccessToken {

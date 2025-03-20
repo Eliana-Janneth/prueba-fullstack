@@ -2,15 +2,17 @@ import prisma from "@/lib/prisma";
 import { CreateMovement } from "@/types";
 import { Context } from "@apollo/client";
 import { ApolloError } from "apollo-server-micro";
+import { requireAuth, requireAdmin } from "@/lib/authMiddleware";
+import { MovementType } from "@prisma/client";
 
 const Movement = {
   Query: {
     movements: async (
       _: any,
-      { type, skip = 0, take = 10 }: { type?: string; skip: number; take: number }, context: Context
+      { type, skip = 0, take = 10 }: { type?: MovementType; skip: number; take: number }, context: Context
     ) => {
 
-      if (!context.session) throw new ApolloError("Unauthorized", "UNAUTHORIZED");
+      requireAuth(context);
 
       //if user is ADMIN return all movements, if not return only the movements of the user
       const filter = context.session.user.role === "ADMIN" ? {} : { userId: context.session.user.id };
@@ -24,8 +26,8 @@ const Movement = {
       });
     },
 
-    movementsCount: async (_: any, { type }: { type?: string }, context: Context) => {
-      if (!context.session) throw new ApolloError("Unauthorized", "UNAUTHORIZED");
+    movementsCount: async (_: any, { type }: { type?: MovementType }, context: Context) => {
+      requireAuth(context);
 
       const filter = context.session.user.role === "ADMIN" ? {} : { userId: context.session.user.id };
 
@@ -37,9 +39,7 @@ const Movement = {
 
   Mutation: {
     addMovement: async (_: any, { concept, amount, type, userId }: CreateMovement, context: Context) => {
-      if (!context.session || context.session.user.role !== "ADMIN") {
-        throw new ApolloError("Forbidden", "FORBIDDEN");
-      }
+      requireAdmin(context);
 
       return await prisma.movement.create({
         data: { concept, amount, type, userId },
