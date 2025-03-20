@@ -1,13 +1,56 @@
 'use client';
 
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { useModal } from '@hooks/useModal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { useAuth } from '@hooks/useAuth';
+import { CREATE_MOVEMENT } from '@/hooks/mutation/movements';
+import { useAlertStore } from '@/hooks/useAlertStore';
 
 export default function NewMovementModal() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { userId } = useAuth();
+  const { setAlert } = useAlertStore();
+
+  const [concept, setConcept] = useState('');
+  const [amount, setAmount] = useState('');
+  const [type, setType] = useState('INCOME');
+
+  const [createMovement, { loading }] = useMutation(CREATE_MOVEMENT, {
+    onCompleted: () => {
+      closeModal();
+      setConcept('');
+      setAmount('');
+      setAlert('Movimiento creado con éxito');
+    },
+    onError: () => {
+      setAlert('Error al crear el movimiento', 'destructive');
+    },
+  });
+
+  const handleSave = async () => {
+    if (!concept || !amount) {
+      setAlert('Todos los campos son obligatorios', 'destructive');
+      return;
+    }
+
+    try {
+      await createMovement({
+        variables: {
+          concept,
+          amount: parseFloat(amount),
+          type,
+          userId,
+        },
+      });
+    } catch (err) {
+      setAlert('Error al crear el movimiento', 'destructive');
+    }
+  };
 
   return (
     <>
@@ -24,12 +67,21 @@ export default function NewMovementModal() {
           onInteractOutside={(event) => event.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle className='text-center'>Crear Nuevo Movimiento</DialogTitle>
+            <DialogTitle className='text-center'>
+              Crear Nuevo Movimiento
+            </DialogTitle>
           </DialogHeader>
           <div className='grid gap-4'>
+
             <div className='flex flex-col gap-2'>
               <Label htmlFor='amount'>Monto</Label>
-              <Input type='text' id='amount' placeholder='Monto' />
+              <Input
+                type='number'
+                id='amount'
+                placeholder='Monto'
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
             </div>
             <div className='flex flex-col gap-2'>
               <Label htmlFor='concept'>Concepto</Label>
@@ -37,18 +89,30 @@ export default function NewMovementModal() {
                 type='text'
                 id='concept'
                 placeholder='Concepto del movimiento'
+                value={concept}
+                onChange={(e) => setConcept(e.target.value)}
               />
             </div>
             <div className='flex flex-col gap-2'>
-              <Label htmlFor='date'>Fecha</Label>
-              <Input type='date' id='date' placeholder='Fecha del movimiento' />
+              <Label htmlFor='type'>Tipo</Label>
+              <select
+                id='type'
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className='border rounded px-3 py-2'
+              >
+                <option value='INCOME'>Ingreso</option>
+                <option value='EXPENSE'>Egreso</option>
+              </select>
             </div>
           </div>
           <div className='flex justify-center mt-4'>
             <Button variant='outline' onClick={closeModal} className='mr-2'>
               Cancelar
             </Button>
-            <Button onClick={closeModal}>Guardar</Button>
+            <Button onClick={handleSave} disabled={loading}>
+              {loading ? 'Guardando...' : 'Guardar'}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

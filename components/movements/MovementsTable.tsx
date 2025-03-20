@@ -60,7 +60,7 @@ export default function MovementsTable() {
                   second: '2-digit',
                 }).format(new Date(Number(m.date)))}
               </TableCell>
-              <TableCell>{m.type}</TableCell>
+              <TableCell>{m.type.INCOME ? 'Ingreso' : 'Egreso'}</TableCell>
               <TableCell>{m.user.name}</TableCell>
             </TableRow>
           ))}

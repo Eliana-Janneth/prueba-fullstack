@@ -42,7 +42,10 @@ const Movement = {
       requireAdmin(context);
 
       return await prisma.movement.create({
-        data: { concept, amount, type, userId },
+        data: {
+          concept, amount, type, user: { connect: { id: userId } }, 
+        },
+        include: { user: true }, 
       });
     },
   },
