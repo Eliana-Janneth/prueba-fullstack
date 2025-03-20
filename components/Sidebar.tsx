@@ -12,12 +12,12 @@ import {
   SidebarSeparator,
 } from '@components/ui/sidebar';
 import Link from 'next/link';
-import { Home, Users, BarChart2, LogOut, LogIn } from 'lucide-react';
+import { Users, BarChart2, LogOut, LogIn, BadgeDollarSign } from 'lucide-react';
 import { signIn, signOut } from 'next-auth/react';
 import { useAuth } from '@/hooks/useAuth';
 
 const menuItems = [
-  { name: 'Ingresos y Egresos', href: '/movements', icon: <Home /> },
+  { name: 'Ingresos y Egresos', href: '/movements', icon: <BadgeDollarSign /> },
   { name: 'Usuarios', href: '/users', icon: <Users />, adminOnly: true },
   { name: 'Reportes', href: '/reports', icon: <BarChart2 />, adminOnly: true },
 ];
