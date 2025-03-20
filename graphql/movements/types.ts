@@ -1,13 +1,26 @@
 import { gql } from "apollo-server-micro";
 
 const Movement = gql`
+  enum MovementType {
+    INCOME
+    EXPENSE
+  }
+
   type Movement {
     id: ID!
     concept: String!
     amount: Float!
     date: String!
-    type: String!
+    type: MovementType!
     user: User!
+  }
+
+  input MovementInput {
+    concept: String!
+    amount: Float!
+    type: MovementType!
+    userId: String!
+    date: String
   }
 
   type Query {
@@ -16,9 +29,8 @@ const Movement = gql`
   }
 
   type Mutation {
-    addMovement(concept: String!, amount: Float!, type:String!, userId: String!): Movement
+    addMovement(input: MovementInput!): Movement
   }
-
 `;
 
 export { Movement }

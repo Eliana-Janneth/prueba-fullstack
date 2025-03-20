@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_MOVEMENT = gql`
-  mutation CreateMovement($concept: String!, $amount: Float!, $type: String!, $userId: String!) { 
-    addMovement(concept: $concept, amount: $amount, type: $type, userId: $userId) {
+  mutation CreateMovement($input: MovementInput!) {
+    addMovement(input: $input) {
       id
       concept
       amount

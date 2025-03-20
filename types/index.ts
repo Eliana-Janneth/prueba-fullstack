@@ -25,11 +25,12 @@ export interface MovementQueryData {
   movementsCount: number;
 }
 
-export interface CreateMovement {
+export interface MovementInput {
   concept: string;
   amount: number;
   type: MovementType
   userId: string
+  date: string
 }
 
 export interface UserUpdateInput {

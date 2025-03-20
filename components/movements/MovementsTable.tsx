@@ -10,13 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { MovementQueryData } from '@/types';
 
 export default function MovementsTable() {
   const [page, setPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
 
   const { data, loading, error } = useQuery<MovementQueryData>(GET_MOVEMENTS, {
     variables: {
@@ -60,7 +60,9 @@ export default function MovementsTable() {
                   second: '2-digit',
                 }).format(new Date(Number(m.date)))}
               </TableCell>
-              <TableCell>{m.type.INCOME ? 'Ingreso' : 'Egreso'}</TableCell>
+              <TableCell>
+                {m.type === 'INCOME' ? 'Ingreso' : 'Egreso'}
+              </TableCell>
               <TableCell>{m.user.name}</TableCell>
             </TableRow>
           ))}

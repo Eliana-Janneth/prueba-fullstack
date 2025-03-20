@@ -10,6 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { useAuth } from '@hooks/useAuth';
 import { CREATE_MOVEMENT } from '@/hooks/mutation/movements';
 import { useAlertStore } from '@/hooks/useAlertStore';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 export default function NewMovementModal() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -19,12 +26,14 @@ export default function NewMovementModal() {
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState('INCOME');
+  const [date, setDate] = useState('');
 
   const [createMovement, { loading }] = useMutation(CREATE_MOVEMENT, {
     onCompleted: () => {
       closeModal();
       setConcept('');
       setAmount('');
+      setDate('');
       setAlert('Movimiento creado con éxito');
     },
     onError: () => {
@@ -37,16 +46,26 @@ export default function NewMovementModal() {
       setAlert('Todos los campos son obligatorios', 'destructive');
       return;
     }
+    const parsedAmount = parseFloat(amount);
 
+    if (parsedAmount >= 100000000 || parsedAmount < 0) {
+      setAlert("El monto debe estar entre 0 y 99,999,999.99", "destructive");
+      return;
+    }
+    
     try {
       await createMovement({
         variables: {
-          concept,
-          amount: parseFloat(amount),
-          type,
-          userId,
+          input: {
+            concept,
+            amount: parseFloat(amount),
+            type: type as "INCOME" | "EXPENSE", 
+            userId,
+            date: date || null, 
+          },
         },
       });
+     
     } catch (err) {
       setAlert('Error al crear el movimiento', 'destructive');
     }
@@ -72,7 +91,6 @@ export default function NewMovementModal() {
             </DialogTitle>
           </DialogHeader>
           <div className='grid gap-4'>
-
             <div className='flex flex-col gap-2'>
               <Label htmlFor='amount'>Monto</Label>
               <Input
@@ -94,16 +112,26 @@ export default function NewMovementModal() {
               />
             </div>
             <div className='flex flex-col gap-2'>
-              <Label htmlFor='type'>Tipo</Label>
-              <select
-                id='type'
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className='border rounded px-3 py-2'
-              >
-                <option value='INCOME'>Ingreso</option>
-                <option value='EXPENSE'>Egreso</option>
-              </select>
+              <Label htmlFor='type'>Tipo de movimiento</Label>
+              <Select value={type} onValueChange={setType}>
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Selecciona un tipo de movimiento' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='INCOME'>Ingreso</SelectItem>
+                  <SelectItem value='EXPENSE'>Egreso</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className='flex flex-col gap-2'>
+              <Label htmlFor='date'>Fecha (Opcional)</Label>
+              <Input
+                type='date'
+                id='date'
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
             </div>
           </div>
           <div className='flex justify-center mt-4'>

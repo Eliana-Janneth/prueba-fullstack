@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { CreateMovement } from "@/types";
+import { MovementInput } from "@/types";
 import { Context } from "@apollo/client";
 import { requireAuth, requireAdmin } from "@/lib/authMiddleware";
 import { MovementType } from "@prisma/client";
@@ -37,14 +37,18 @@ const Movement = {
   },
 
   Mutation: {
-    addMovement: async (_: any, { concept, amount, type, userId }: CreateMovement, context: Context) => {
+    addMovement: async (_: any, { input }: { input: MovementInput }, context: Context) => {
       requireAdmin(context);
 
       return await prisma.movement.create({
         data: {
-          concept, amount, type, user: { connect: { id: userId } }, 
+          concept: input.concept,
+          amount: input.amount,
+          type: input.type as MovementType, 
+          user: { connect: { id: input.userId } },
+          date: input.date ? new Date(input.date) : new Date(), 
         },
-        include: { user: true }, 
+        include: { user: true },
       });
     },
   },
