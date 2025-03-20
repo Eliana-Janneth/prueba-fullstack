@@ -1,6 +1,6 @@
 'use client';
 
-import { FinancialSummary } from '@/types/reports';
+import { FinancialSummary } from '@/types';
 import {
   BarChart,
   Bar,

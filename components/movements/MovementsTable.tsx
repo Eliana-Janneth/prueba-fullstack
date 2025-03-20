@@ -12,7 +12,7 @@ import {
 } from '../ui/table';
 import { useCallback, useState } from 'react';
 import { Button } from '../ui/button';
-import { MovementQueryData } from '@/types/reports';
+import { MovementQueryData } from '@/types';
 
 export default function MovementsTable() {
   const [page, setPage] = useState(1);
@@ -73,10 +73,7 @@ export default function MovementsTable() {
         <span>
           Página {page} de {totalPages}
         </span>
-        <Button
-          onClick={nextPage}
-          disabled={page === totalPages}
-        >
+        <Button onClick={nextPage} disabled={page === totalPages}>
           Siguiente
         </Button>
       </div>

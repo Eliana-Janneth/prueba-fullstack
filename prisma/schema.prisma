@@ -7,13 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MovementType {
+  INCOME
+  EXPENSE
+}
+
 model User {
   id        String     @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
   name      String     @map("name") @db.VarChar(255)
   email     String     @unique @map("email") @db.VarChar(255)
   phone     String?    @map("phone") @db.VarChar(20)
-  role      String?    @default("USER") @map("role") @db.VarChar(10)
-  password  String     @map("password")
+  role      Role       @default(USER) @map("role")
+  password  String     @map("password") 
   movements Movement[]
 
   @@index([email], map: "idx_users_email")
@@ -26,7 +36,7 @@ model Movement {
   amount  Decimal   @map("amount") @db.Decimal(10, 2)
   date    DateTime? @default(now()) @map("date") @db.Timestamp(6)
   userId  String    @map("user_id") @db.Uuid
-  type    String    @default("income")
+  type    MovementType  @default(INCOME)
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([date], map: "idx_movements_date")

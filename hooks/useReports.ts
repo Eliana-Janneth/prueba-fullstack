@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { GET_FINANCIAL_SUMMARY } from "./query/reports";
-import { FinancialSummary } from "@/types/reports";
+import { FinancialSummary } from "@/types";
 import { Movement } from "@prisma/client";
 
 export function useReports() {
