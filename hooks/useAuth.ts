@@ -1,17 +1,19 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 interface SessionUser {
   role: string;
 }
 export function useAuth() {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   const user = session?.user as SessionUser | undefined;
 
   if (status === "unauthenticated") {
-    signIn("auth0");
+    router.push("/auth/login");
   }
-  
+
   return {
     session,
     isLoading: status === "loading",

@@ -1,7 +1,7 @@
 import '../styles/globals.css';
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
-import Layout from '@/components/layout';
+import Layout from '@components/layout';
 import { SessionProvider } from 'next-auth/react';
 import client from '@lib/apolloClient';
 
