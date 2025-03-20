@@ -32,13 +32,10 @@ export interface CreateMovement {
   userId: string
 }
 
-export interface UpdateUser {
-  input: {
-    name: string;
-    role: Role
-    id: string;
-  }
-
+export interface UserUpdateInput {
+  name: string;
+  role: Role
+  id: string
 }
 export interface userDataProps {
   email: string,

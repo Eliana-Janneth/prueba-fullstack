@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
 import { CreateMovement } from "@/types";
 import { Context } from "@apollo/client";
-import { ApolloError } from "apollo-server-micro";
 import { requireAuth, requireAdmin } from "@/lib/authMiddleware";
 import { MovementType } from "@prisma/client";
 

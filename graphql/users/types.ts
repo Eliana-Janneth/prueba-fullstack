@@ -22,6 +22,7 @@ const User = gql`
   }
 
   input UserUpdateInput {
+    id: ID!
     name: String!
     role: String!
   }
