@@ -12,9 +12,13 @@ export function useAuth() {
   const router = useRouter();
 
   const user = session?.user as SessionUser | null | undefined;
-  
+
   useEffect(() => {
-    if (status === "unauthenticated" && router.pathname !== "/auth/login") {
+    if (
+      status === "unauthenticated" &&
+      router.pathname !== "/auth/login" &&
+      router.pathname !== "/auth/register"
+    ) {
       router.replace("/auth/login");
     }
   }, [status, router]);

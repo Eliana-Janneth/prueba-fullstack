@@ -62,7 +62,7 @@ export default function AppSidebar() {
               </SidebarMenuButton>
             ) : (
               <SidebarMenuButton
-                onClick={() => signIn('auth0')}
+                onClick={() => signIn()}
                 className='flex items-center gap-2'
               >
                 <LogIn />

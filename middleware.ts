@@ -5,3 +5,7 @@ export default withAuth({
     signIn: "/auth/login", 
   },
 });
+
+export const config = {
+  matcher: ["/((?!auth/register).*)"],
+};
