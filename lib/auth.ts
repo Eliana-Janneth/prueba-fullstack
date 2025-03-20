@@ -4,7 +4,6 @@ import { Role } from "@prisma/client";
 import { getAccessToken, createAuth0User, getAuth0UserByEmail } from "@/lib/auth0";
 
 //Hashes a given password securely
-
 export async function hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
 }

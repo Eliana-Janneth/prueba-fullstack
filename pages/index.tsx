@@ -11,15 +11,18 @@ export default function Home() {
         <HomeCard
           title='Gestión de Movimientos'
           icon={<BadgeDollarSign className='h-6 w-6' />}
+          href='/movements'
         />
         <HomeCard
           title='Gestión de Usuarios'
           icon={<UsersRound className='h-6 w-6' />}
+          href='/users'
         />
         <HomeCard
           title='Reportes'
           icon={<ChartColumnBig className='h-6 w-6' />}
-        />{' '}
+          href='/reports'
+        />
       </div>
     </div>
   );

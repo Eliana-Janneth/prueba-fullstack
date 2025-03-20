@@ -13,11 +13,8 @@ const Movement = {
 
       requireAuth(context);
 
-      //if user is ADMIN return all movements, if not return only the movements of the user
-      const filter = context.session.user.role === "ADMIN" ? {} : { userId: context.session.user.id };
-
       return await prisma.movement.findMany({
-        where: { ...filter, ...(type ? { type } : {}) },
+        where: type ? { type } : {}, 
         skip,
         take,
         include: { user: true },
@@ -33,6 +30,29 @@ const Movement = {
       return await prisma.movement.count({
         where: { ...filter, ...(type ? { type } : {}) },
       });
+    },
+
+    balanceTotal: async (_: any, __: any, context: Context) => {
+      requireAuth(context);
+
+      const ingresos = await prisma.movement.aggregate({
+        where: { type: "INCOME" },
+        _sum: { amount: true },
+      });
+
+      const egresos = await prisma.movement.aggregate({
+        where: { type: "EXPENSE" },
+        _sum: { amount: true },
+      });
+
+      const totalIngresos = ingresos._sum.amount || 0;
+      const totalEgresos = egresos._sum.amount || 0;
+
+      return {
+        ingresos: totalIngresos,
+        egresos: totalEgresos,
+        balance: Number(totalIngresos) - Number(totalEgresos),
+      };
     },
   },
 

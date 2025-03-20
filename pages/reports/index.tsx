@@ -16,14 +16,14 @@ export default function ReportsPage() {
           <div className='bg-white p-4 rounded-lg shadow-md w-64'>
             <h2 className='text-md font-semibold'>Total Ingresos</h2>
             <p className='text-xl font-bold text-green-600'>
-              {loading ? 'Loading...' : `$${(totalIncome ?? 0).toFixed(2)}`}
+              {loading ? 'Cargando...' : `$${(totalIncome ?? 0).toLocaleString()}`}
             </p>
           </div>
 
           <div className='bg-white p-4 rounded-lg shadow-md w-64'>
             <h2 className='text-md font-semibold'>Total Gastos</h2>
             <p className='text-xl font-bold text-red-600'>
-              {loading ? 'Loading...' : `$${(totalExpense ?? 0).toFixed(2)}`}
+              {loading ? 'Cargando...' : `$${(totalExpense ?? 0).toLocaleString()}`}
             </p>
           </div>
         </div>
@@ -35,7 +35,7 @@ export default function ReportsPage() {
                 balance >= 0 ? 'text-green-600' : 'text-red-600'
               }`}
             >
-              {loading ? 'Loading...' : `$${balance.toFixed(2)}`}
+              {loading ? 'Cargando...' : `$${balance.toLocaleString()}`}
             </p>
           </div>
           <Button onClick={() => downloadCSV(data, balance)}>

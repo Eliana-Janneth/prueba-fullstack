@@ -29,3 +29,13 @@ export const GET_MOVEMENT = gql`
     }
   }
 `;
+
+export const GET_BALANCE = gql`
+  query GetBalanceTotal {
+    balanceTotal {
+      ingresos
+      egresos
+      balance
+    }
+  }
+`;

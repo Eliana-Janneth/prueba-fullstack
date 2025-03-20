@@ -20,16 +20,17 @@ export default function MovementsTable() {
 
   const { data, loading, error } = useQuery<MovementQueryData>(GET_MOVEMENTS, {
     variables: {
-      skip: (page - 1) * pageSize,
+      skip: Math.max((page - 1) * pageSize, 0),
       take: pageSize,
     },
     fetchPolicy: 'cache-and-network',
   });
+
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const totalMovements = data?.movementsCount || 0;
-  const totalPages = Math.ceil(totalMovements / pageSize);
+  const totalPages = Math.max(Math.ceil(totalMovements / pageSize), 1);
 
   const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -49,7 +50,7 @@ export default function MovementsTable() {
           {data?.movements.map((m: any) => (
             <TableRow key={m.id}>
               <TableCell className='font-medium'>{m.concept}</TableCell>
-              <TableCell>{m.amount}</TableCell>
+              <TableCell>${m.amount.toLocaleString()}</TableCell>
               <TableCell>
                 {new Intl.DateTimeFormat('es-ES', {
                   year: 'numeric',
@@ -68,14 +69,14 @@ export default function MovementsTable() {
           ))}
         </TableBody>
       </Table>
-      <div className='flex justify-center gap-4 mt-4'>
-        <Button onClick={prevPage} disabled={page === 1}>
+      <div className='flex justify-center gap-4 mt-4 text-sm items-center'>
+        <Button onClick={prevPage} disabled={page === 1} size='sm'>
           Anterior
         </Button>
         <span>
           Página {page} de {totalPages}
         </span>
-        <Button onClick={nextPage} disabled={page === totalPages}>
+        <Button onClick={nextPage} disabled={page === totalPages} size='sm'>
           Siguiente
         </Button>
       </div>

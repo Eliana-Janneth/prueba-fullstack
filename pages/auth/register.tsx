@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
-import { Button } from "@/components/ui/button";
+import { Input } from "@components/ui/input";
+import { Button } from "@components/ui/button";
+import { Label } from "@components/ui/label";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function RegisterPage() {
       <h1 className="text-2xl font-bold">Registro de Usuario</h1>
       <p className="mt-2 text-gray-600">Completa el formulario para registrarte.</p>
 
-      <form onSubmit={handleSubmit} className="grid gap-4 w-96 bg-white p-6 rounded shadow">
+      <form onSubmit={handleSubmit} className="grid gap-4 w-96 bg-white p-6 rounded-lg shadow">
         <div className="flex flex-col gap-2">
           <Label htmlFor="name">Nombre</Label>
           <Input type="text" id="name" value={formData.name} onChange={handleChange} required />

@@ -23,14 +23,22 @@ const Movement = gql`
     date: String
   }
 
+  type BalanceTotal {
+    ingresos: Float!
+    egresos: Float!
+    balance: Float!
+  }
+
   type Query {
     movements(type: String, skip: Int, take: Int): [Movement!]!
     movementsCount(type: String): Int!
+    balanceTotal: BalanceTotal!
   }
 
   type Mutation {
     addMovement(input: MovementInput!): Movement
   }
+
 `;
 
 export { Movement }
