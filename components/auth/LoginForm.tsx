@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAlertStore } from '@/hooks/useAlertStore';
@@ -9,10 +10,19 @@ import Link from 'next/link';
 import { Label } from '../ui/label';
 
 export default function FormLogin() {
+  const router = useRouter();
   const { setAlert } = useAlertStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const error = router.query.error as string;
+    if (error) {
+      const message = decodeURIComponent(error);
+      setAlert(message, 'destructive');
+    }
+  }, [router.query.error, setAlert]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,20 +34,22 @@ export default function FormLogin() {
       setLoading(false);
       return;
     }
-    const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl") || "/";
+
+    const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/';
 
     try {
       const res = await signIn('credentials', {
         email,
         password,
-        redirect: true,
-        callbackUrl
+        redirect: false, 
+        callbackUrl,
       });
 
       if (res?.error) {
-        setAlert('Credenciales incorrectas', 'destructive');
-      } else {
+        setAlert(decodeURIComponent(res.error), 'destructive');
+      } else if (res?.ok) {
         setAlert('Inicio de sesión exitoso');
+        router.push(res.url || '/');
       }
     } catch (err) {
       setAlert('Error al iniciar sesión, intenta nuevamente.', 'destructive');
