@@ -10,7 +10,7 @@ export function useReports() {
 
   const allMovements: MovementWithUser[] = data.allMovements;
 
-  // Filtrar movimientos por el mes actual
+  //Filter movements from the current month
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth(); // 0-11
@@ -23,7 +23,7 @@ export function useReports() {
     );
   });
 
-  // Agrupar por día (YYYY-MM-DD)
+  // Group by (YYYY-MM-DD)
   const groupedData: Record<string, { income: number; expense: number }> =
     currentMonthMovements.reduce((acc: Record<string, { income: number; expense: number }>, movement) => {
       const dateObj = new Date(Number(movement.date));
@@ -42,14 +42,14 @@ export function useReports() {
       return acc;
     }, {});
 
-  // Formato para el gráfico
+  // Format to chart data
   const chartData: FinancialSummary[] = Object.keys(groupedData).map((date) => ({
     date,
     income: groupedData[date].income,
     expense: groupedData[date].expense,
   }));
 
-  // Calcular totales del mes actual
+  // Calculate total income, total expense and balance
   const totalIncome = chartData.reduce((sum, d) => sum + d.income, 0);
   const totalExpense = chartData.reduce((sum, d) => sum + d.expense, 0);
   const balance = totalIncome - totalExpense;

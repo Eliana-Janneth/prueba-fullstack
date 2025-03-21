@@ -38,11 +38,8 @@ const Movement = {
 
     movementsCount: async (_: any, { type }: { type?: MovementType }, context: Context) => {
       requireAuth(context);
-
-      const filter = context.session.user.role === "ADMIN" ? {} : { userId: context.session.user.id };
-
       return await prisma.movement.count({
-        where: { ...filter, ...(type ? { type } : {}) },
+        where: type ? { type } : {},
       });
     },
 

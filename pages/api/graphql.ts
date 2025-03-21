@@ -31,6 +31,13 @@
   async function createContext({ req, res }: { req: NextApiRequest; res: ServerResponse }) {
     const session = await getServerSession(req, res, authOptions);
 
+    if (!session) {
+      return {
+        prisma,
+        session: null,
+      };
+    }  
+
     return {
       prisma, // Database connection
       session, // Authenticated user session
@@ -43,7 +50,7 @@
   async function getApolloServer() {
     if (!apolloServer) {
       apolloServer = new ApolloServer({
-        context: ({ req, res }) => createContext({ req, res }),
+        context: createContext,
         typeDefs: [...customTypes],
         resolvers: [...customResolvers],
         persistedQueries: false, // Disable persisted queries
