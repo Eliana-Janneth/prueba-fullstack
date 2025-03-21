@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
@@ -8,7 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { useAlertStore } from '@hooks/useAlertStore';
 import { UPDATE_USER } from '@hooks/mutation/users';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -41,6 +47,11 @@ export default function EditUserModal({
     },
   });
 
+  useEffect(() => {
+    setName(currentName);
+    setRole(currentRole);
+  }, [currentName, currentRole]);
+
   const handleUpdate = async () => {
     if (!name || !role) {
       setAlert('Todos los campos son obligatorios', 'destructive');
@@ -57,7 +68,6 @@ export default function EditUserModal({
           },
         },
       });
-      
     } catch (err) {
       setAlert('Error al actualizar el usuario', 'destructive');
     }
@@ -92,11 +102,11 @@ export default function EditUserModal({
               <Label htmlFor='role'>Rol</Label>
               <Select value={role} onValueChange={setRole}>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder="Selecciona un rol" />
+                  <SelectValue placeholder='Selecciona un rol' />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USER">Usuario</SelectItem>
-                  <SelectItem value="ADMIN">Administrador</SelectItem>
+                <SelectContent className='bg-white'>
+                  <SelectItem value='USER'>Usuario</SelectItem>
+                  <SelectItem value='ADMIN'>Administrador</SelectItem>
                 </SelectContent>
               </Select>
             </div>

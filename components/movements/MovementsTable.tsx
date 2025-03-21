@@ -1,7 +1,5 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
-import { GET_MOVEMENTS } from '@hooks/query/movements';
 import {
   Table,
   TableBody,
@@ -10,30 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
-import { useState } from 'react';
 import { Button } from '../ui/button';
-import { MovementQueryData } from '@/types';
+import { useMovements } from '@/hooks/useMovements';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function MovementsTable() {
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
-
-  const { data, loading, error } = useQuery<MovementQueryData>(GET_MOVEMENTS, {
-    variables: {
-      skip: Math.max((page - 1) * pageSize, 0),
-      take: pageSize,
-    },
-    fetchPolicy: 'cache-and-network',
-  });
+  const { movements, loading, error, page, totalPages, prevPage, nextPage } =
+    useMovements();
 
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const totalMovements = data?.movementsCount || 0;
-  const totalPages = Math.max(Math.ceil(totalMovements / pageSize), 1);
-
-  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
-  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
   return (
     <>
       <Table>
@@ -47,20 +32,14 @@ export default function MovementsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.movements.map((m: any) => (
+          {movements.map((m: any) => (
             <TableRow key={m.id}>
               <TableCell className='font-medium'>{m.concept}</TableCell>
-              <TableCell>${m.amount.toLocaleString()}</TableCell>
+              <TableCell>{formatCurrency(m.amount)}</TableCell>
               <TableCell>
-                {new Intl.DateTimeFormat('es-ES', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                }).format(new Date(Number(m.date)))}
+                {new Date(Number(m.date)).toISOString().split('T')[0]}
               </TableCell>
+
               <TableCell>
                 {m.type === 'INCOME' ? 'Ingreso' : 'Egreso'}
               </TableCell>

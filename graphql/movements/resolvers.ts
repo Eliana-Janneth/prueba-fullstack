@@ -22,6 +22,20 @@ const Movement = {
       });
     },
 
+    allMovements: async (_: any, __: any, context: Context) => {
+      requireAuth(context);
+      const filter =
+        context.session.user.role === "ADMIN"
+          ? {}
+          : { userId: context.session.user.id };
+    
+      return await prisma.movement.findMany({
+        where: filter,
+        include: { user: true },
+        orderBy: { date: "asc" },
+      });
+    },
+
     movementsCount: async (_: any, { type }: { type?: MovementType }, context: Context) => {
       requireAuth(context);
 

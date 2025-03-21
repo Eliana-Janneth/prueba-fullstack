@@ -1,16 +1,14 @@
 import { useAuth } from '@hooks/useAuth';
 import MovementsTable from '@components/movements/MovementsTable';
 import NewMovement from '@components/movements/NewMovement';
-import { useQuery } from '@apollo/client';
-import { GET_BALANCE } from '@/hooks/query/movements';
+import { useMovements } from '@/hooks/useMovements';
+import { formatCurrency } from '@/utils/formatCurrency';
 export default function MovementsPage() {
   const { isLoading, isAdmin } = useAuth();
-  const { data, loading, error } = useQuery(GET_BALANCE);
+  const { balance, loadingBalance, errorBalance } = useMovements();
 
-  if (isLoading || loading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const { ingresos, egresos, balance } = data.balanceTotal;
+  if (isLoading || loadingBalance) return <p>Cargando...</p>;
+  if (errorBalance) return <p>Error: {errorBalance.message}</p>;
 
   return (
     <div className='p-2 flex flex-col'>
@@ -26,7 +24,7 @@ export default function MovementsPage() {
               balance >= 0 ? 'text-green-600' : 'text-red-600'
             }`}
           >
-            ${balance.toLocaleString()}
+            {formatCurrency(balance)}
           </span>
         </p>
         {isAdmin && <NewMovement />}

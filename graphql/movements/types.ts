@@ -33,6 +33,7 @@ const Movement = gql`
     movements(type: String, skip: Int, take: Int): [Movement!]!
     movementsCount(type: String): Int!
     balanceTotal: BalanceTotal!
+    allMovements: [Movement!]! 
   }
 
   type Mutation {

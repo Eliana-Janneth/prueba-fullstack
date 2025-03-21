@@ -52,3 +52,9 @@ export interface AccessToken {
   expires_in: number;
   token_type: string;
 }
+
+export interface MovementWithUser extends Movement {
+  user: {
+    name: string;
+  };
+}

@@ -1,15 +1,24 @@
-export function downloadCSV(data: any[], balance: number) {
+import { MovementWithUser } from "@/types";
+
+export function downloadCSV(data: MovementWithUser[], balance: number) {
     if (!data || data.length === 0) {
       alert("No data available to download.");
       return;
     }
   
     // Define CSV Headers
-    const headers = ["Date", "Income", "Expense"];
+    const headers = ["ID", "Fecha", "Concepto", "Monto", "Tipo", "Usuario"];
   
     // Convert data to CSV format
-    const csvRows = data.map(({ date, income, expense }) => 
-      `${date},${income},${expense}`
+    const csvRows = data.map((m) =>
+      [
+        m.id,
+        new Date(Number(m.date)).toLocaleDateString("es-ES"), 
+        m.concept,
+        m.amount.toFixed(2),
+        m.type === "INCOME" ? "Ingreso" : "Egreso",
+        m.user.name, 
+      ].join(",")
     );
   
     // Add balance at the end of CSV

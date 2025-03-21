@@ -1,17 +1,31 @@
 import { useQuery } from "@apollo/client";
-import { GET_FINANCIAL_SUMMARY } from "./query/reports";
-import { FinancialSummary } from "@/types";
-import { Movement } from "@prisma/client";
+import {  GET_FINANCIAL_SUMMARY } from "./query/reports";
+import { FinancialSummary, MovementWithUser } from "@/types";
 
 export function useReports() {
   const { data, loading, error } = useQuery(GET_FINANCIAL_SUMMARY);
 
-  if (loading) return { data: [], balance: 0, loading: true, error: null };
-  if (error) return { data: [], balance: 0, loading: false, error };
+  if (loading) return { data: [], balance: 0, loading: true, error: null, allMovements: [] };
+  if (error) return { data: [], balance: 0, loading: false, error, allMovements: [] };
 
-  // Group transactions by day instead of month
-  const groupedData: Record<string, { income: number; expense: number }> = data.movements.reduce(
-    (acc: Record<string, { income: number; expense: number }>, movement: Movement) => {
+  const allMovements: MovementWithUser[] = data.allMovements;
+
+  // Filtrar movimientos por el mes actual
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth(); // 0-11
+
+  const currentMonthMovements = allMovements.filter((movement) => {
+    const movementDate = new Date(Number(movement.date));
+    return (
+      movementDate.getFullYear() === currentYear &&
+      movementDate.getMonth() === currentMonth
+    );
+  });
+
+  // Agrupar por día (YYYY-MM-DD)
+  const groupedData: Record<string, { income: number; expense: number }> =
+    currentMonthMovements.reduce((acc: Record<string, { income: number; expense: number }>, movement) => {
       const dateObj = new Date(Number(movement.date));
       const dayKey = dateObj.toISOString().slice(0, 10); // YYYY-MM-DD
 
@@ -26,24 +40,27 @@ export function useReports() {
       }
 
       return acc;
-    },
-    {}
-  );
+    }, {});
 
-  // Convert grouped data to array
+  // Formato para el gráfico
   const chartData: FinancialSummary[] = Object.keys(groupedData).map((date) => ({
     date,
     income: groupedData[date].income,
     expense: groupedData[date].expense,
   }));
 
-  // Calculate today's income and expense
-  const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  const totalIncome = groupedData[todayKey]?.income || 0;
-  const totalExpense = groupedData[todayKey]?.expense || 0;
-
-  // Calculate current balance (income - expenses)
+  // Calcular totales del mes actual
+  const totalIncome = chartData.reduce((sum, d) => sum + d.income, 0);
+  const totalExpense = chartData.reduce((sum, d) => sum + d.expense, 0);
   const balance = totalIncome - totalExpense;
 
-  return { data: chartData, totalIncome, totalExpense, balance, loading, error };
+  return {
+    data: chartData,
+    totalIncome,
+    totalExpense,
+    balance,
+    loading,
+    error,
+    allMovements,
+  };
 }

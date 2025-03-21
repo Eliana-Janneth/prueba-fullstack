@@ -17,58 +17,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { useMovements } from '@/hooks/useMovements';
 
 export default function NewMovementModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const { userId } = useAuth();
-  const { setAlert } = useAlertStore();
+  const { addMovement, creating } = useMovements(); 
 
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState('INCOME');
   const [date, setDate] = useState('');
 
-  const [createMovement, { loading }] = useMutation(CREATE_MOVEMENT, {
-    onCompleted: () => {
-      closeModal();
-      setConcept('');
-      setAmount('');
-      setDate('');
-      setAlert('Movimiento creado con éxito');
-    },
-    onError: () => {
-      setAlert('Error al crear el movimiento', 'destructive');
-    },
-  });
-
-  const handleSave = async () => {
-    if (!concept || !amount) {
-      setAlert('Todos los campos son obligatorios', 'destructive');
-      return;
-    }
-    const parsedAmount = parseFloat(amount);
-
-    if (parsedAmount >= 100000000 || parsedAmount < 0) {
-      setAlert("El monto debe estar entre 0 y 99,999,999.99", "destructive");
-      return;
-    }
-    
-    try {
-      await createMovement({
-        variables: {
-          input: {
-            concept,
-            amount: parseFloat(amount),
-            type: type as "INCOME" | "EXPENSE", 
-            userId,
-            date: date || null, 
-          },
-        },
-      });
-     
-    } catch (err) {
-      setAlert('Error al crear el movimiento', 'destructive');
-    }
+  const handleSave = () => {
+    addMovement({ concept, amount, type, userId, date });
+    closeModal();
   };
 
   return (
@@ -117,8 +80,8 @@ export default function NewMovementModal() {
                 <SelectTrigger className='w-full'>
                   <SelectValue placeholder='Selecciona un tipo de movimiento' />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='INCOME'>Ingreso</SelectItem>
+                <SelectContent className="bg-white">
+                <SelectItem value='INCOME'>Ingreso</SelectItem>
                   <SelectItem value='EXPENSE'>Egreso</SelectItem>
                 </SelectContent>
               </Select>
@@ -138,8 +101,8 @@ export default function NewMovementModal() {
             <Button variant='outline' onClick={closeModal} className='mr-2'>
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={loading}>
-              {loading ? 'Guardando...' : 'Guardar'}
+            <Button onClick={handleSave} disabled={creating}>
+              {creating ? 'Guardando...' : 'Guardar'}
             </Button>
           </div>
         </DialogContent>
