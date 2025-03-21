@@ -42,16 +42,10 @@ export default function FormLogin() {
       const res = await signIn('credentials', {
         email,
         password,
-        redirect: false,
+        redirect: true,
         callbackUrl,
       });
 
-      if (res?.ok && res.url) {
-        setAlert('Inicio de sesión exitoso');
-        router.replace(res.url);
-      } else if (res?.error) {
-        setAlert(decodeURIComponent(res.error), 'destructive');
-      }
     } catch (err) {
       setAlert('Error al iniciar sesión, intenta nuevamente.', 'destructive');
     } finally {
