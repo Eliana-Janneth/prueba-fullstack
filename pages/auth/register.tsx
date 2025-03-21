@@ -45,7 +45,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen'>
+    <div className='flex flex-col items-center justify-center'>
       <form
         onSubmit={handleSubmit}
         className='grid gap-4 w-96 bg-card p-6 rounded-lg shadow'

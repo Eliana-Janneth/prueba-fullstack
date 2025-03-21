@@ -21,7 +21,7 @@ export default function LoginPage() {
   if (status === 'loading') return <p>Cargando...</p>;
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen px-6'>
+    <div className='flex flex-col items-center justify-center px-6'>
       <FormLogin />
     </div>
   );
