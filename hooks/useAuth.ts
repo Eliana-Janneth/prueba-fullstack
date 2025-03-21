@@ -20,7 +20,7 @@ export function useAuth() {
         router.pathname !== "/auth/login" &&
         router.pathname !== "/auth/register"
       ) {
-        router.replace(`/auth/login?callbackUrl=${router.pathname}`);
+        router.replace(`/auth/login?callbackUrl=${encodeURIComponent(router.pathname)}`);
       }
     }
   }, [status, router]);

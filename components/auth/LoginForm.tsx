@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAlertStore } from '@/hooks/useAlertStore';
@@ -10,7 +9,6 @@ import Link from 'next/link';
 import { Label } from '../ui/label';
 
 export default function FormLogin() {
-  const router = useRouter();
   const { setAlert } = useAlertStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,19 +24,20 @@ export default function FormLogin() {
       setLoading(false);
       return;
     }
+    const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl") || "/";
 
     try {
       const res = await signIn('credentials', {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl
       });
 
       if (res?.error) {
         setAlert('Credenciales incorrectas', 'destructive');
       } else {
         setAlert('Inicio de sesión exitoso');
-        router.push('/');
       }
     } catch (err) {
       setAlert('Error al iniciar sesión, intenta nuevamente.', 'destructive');
