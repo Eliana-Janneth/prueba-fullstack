@@ -45,15 +45,17 @@ export default function FormLogin() {
         redirect: false,
         callbackUrl,
       });
-      console.log(res);
-      if (res?.error) {
-        setAlert(decodeURIComponent(res.error), 'destructive');
-      } else if (res?.ok) {
+
+      if (res?.ok && res.url) {
         setAlert('Inicio de sesión exitoso');
-        router.push('/');
+        router.replace(res.url);
+      } else if (res?.error) {
+        setAlert(decodeURIComponent(res.error), 'destructive');
       }
     } catch (err) {
       setAlert('Error al iniciar sesión, intenta nuevamente.', 'destructive');
+    } finally {
+      setLoading(false);
     }
   };
   return (
