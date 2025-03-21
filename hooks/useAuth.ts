@@ -14,14 +14,17 @@ export function useAuth() {
   const user = session?.user as SessionUser | null | undefined;
 
   useEffect(() => {
-    if (
-      status === "unauthenticated" &&
-      router.pathname !== "/auth/login" &&
-      router.pathname !== "/auth/register"
-    ) {
-      router.replace("/auth/login");
+    if (status !== "loading") {
+      if (
+        status === "unauthenticated" &&
+        router.pathname !== "/auth/login" &&
+        router.pathname !== "/auth/register"
+      ) {
+        router.replace(`/auth/login?callbackUrl=${router.pathname}`);
+      }
     }
   }, [status, router]);
+  
 
   return {
     session,
