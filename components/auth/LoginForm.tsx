@@ -35,29 +35,27 @@ export default function FormLogin() {
       return;
     }
 
-    const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/';
+    const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl") || "/";
 
     try {
-      const res = await signIn('credentials', {
+      const res = await signIn("credentials", {
         email,
         password,
-        redirect: false, 
+        redirect: false,
         callbackUrl,
       });
-
+    
       if (res?.error) {
-        setAlert(decodeURIComponent(res.error), 'destructive');
+        setAlert(decodeURIComponent(res.error), "destructive");
       } else if (res?.ok) {
-        setAlert('Inicio de sesión exitoso');
-        router.push(res.url || '/');
+        setAlert("Inicio de sesión exitoso");
+        const targetUrl = res.url || callbackUrl || "/";
+        router.push(targetUrl);
       }
     } catch (err) {
-      setAlert('Error al iniciar sesión, intenta nuevamente.', 'destructive');
-    } finally {
-      setLoading(false);
+      setAlert("Error al iniciar sesión, intenta nuevamente.", "destructive");
     }
-  };
-
+  }
   return (
     <div className='w-full max-w-sm mt-6 bg-card p-6 rounded-lg shadow-md'>
       <h1 className='text-2xl font-bold text-center'>Iniciar Sesión</h1>
