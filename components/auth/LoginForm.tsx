@@ -49,8 +49,8 @@ export default function FormLogin() {
         setAlert(decodeURIComponent(res.error), "destructive");
       } else if (res?.ok) {
         setAlert("Inicio de sesión exitoso");
-        const targetUrl = res.url || callbackUrl || "/";
-        router.push(targetUrl);
+        const targetPath = res.url ? new URL(res.url).pathname : callbackUrl || "/";
+        router.push(targetPath);
       }
     } catch (err) {
       setAlert("Error al iniciar sesión, intenta nuevamente.", "destructive");
