@@ -3,7 +3,7 @@ import { BadgeDollarSign, ChartColumnBig, UsersRound } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className='p-6 '>
+    <div className='p-6 h-full flex flex-col justify-center items-center'>
       <h1 className='text-2xl font-bold text-center'>
         SISTEMA DE GESTIÓN DE INGRESOS Y GASTOS
       </h1>

@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Input } from '@/components/ui/input';
-import { Label } from '@radix-ui/react-label';
 import { Button } from '@/components/ui/button';
 import { useAlertStore } from '@/hooks/useAlertStore';
+import Link from 'next/link';
+import { Label } from '../ui/label';
 
 export default function FormLogin() {
   const router = useRouter();
@@ -47,12 +48,14 @@ export default function FormLogin() {
   };
 
   return (
-    <div className='w-full max-w-sm mt-6 bg-white p-6 rounded-lg shadow-md'>
+    <div className='w-full max-w-sm mt-6 bg-card p-6 rounded-lg shadow-md'>
+      <h1 className='text-2xl font-bold text-center'>Iniciar Sesión</h1>
+      <p className='mt-2 text-gray-600 text-center'>Accede con tu cuenta</p>
       <form
         onSubmit={handleSubmit}
-        className='space-y-4 justify-center flex flex-col'
+        className='space-y-4 justify-center flex flex-col mt-4'
       >
-        <div>
+        <div className='space-y-1'>
           <Label htmlFor='email'>Correo electrónico</Label>
           <Input
             type='email'
@@ -63,7 +66,7 @@ export default function FormLogin() {
           />
         </div>
 
-        <div>
+        <div className='space-y-1'>
           <Label htmlFor='password'>Contraseña</Label>
           <Input
             type='password'
@@ -73,10 +76,16 @@ export default function FormLogin() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-          <Button type='submit' disabled={loading} size='sm'>
-            {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-          </Button>
+        <Button type='submit' disabled={loading} size='sm'>
+          {loading ? 'Iniciando...' : 'Iniciar Sesión'}
+        </Button>
       </form>
+      <p className='mt-4 text-sm text-center'>
+        ¿No tienes cuenta?{' '}
+        <Link href='/auth/register' className='text-primary hover:underline'>
+          Regístrate aquí
+        </Link>
+      </p>
     </div>
   );
 }

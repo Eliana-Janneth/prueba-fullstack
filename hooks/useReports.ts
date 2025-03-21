@@ -9,21 +9,20 @@ export function useReports() {
   if (loading) return { data: [], balance: 0, loading: true, error: null };
   if (error) return { data: [], balance: 0, loading: false, error };
 
-
-  // Group transactions by month
+  // Group transactions by day instead of month
   const groupedData: Record<string, { income: number; expense: number }> = data.movements.reduce(
     (acc: Record<string, { income: number; expense: number }>, movement: Movement) => {
       const dateObj = new Date(Number(movement.date));
-      const monthKey = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, "0")}`;
+      const dayKey = dateObj.toISOString().slice(0, 10); // YYYY-MM-DD
 
-      if (!acc[monthKey]) {
-        acc[monthKey] = { income: 0, expense: 0 };
+      if (!acc[dayKey]) {
+        acc[dayKey] = { income: 0, expense: 0 };
       }
 
       if (movement.type === "INCOME") {
-        acc[monthKey].income += Number(movement.amount);
+        acc[dayKey].income += Number(movement.amount);
       } else if (movement.type === "EXPENSE") {
-        acc[monthKey].expense += Number(movement.amount);
+        acc[dayKey].expense += Number(movement.amount);
       }
 
       return acc;
@@ -31,17 +30,17 @@ export function useReports() {
     {}
   );
 
-  // Convert grouped data object to an array for Recharts
+  // Convert grouped data to array
   const chartData: FinancialSummary[] = Object.keys(groupedData).map((date) => ({
     date,
     income: groupedData[date].income,
     expense: groupedData[date].expense,
   }));
 
-  // Calculate total income & expenses for the current month
-  const currentMonthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
-  const totalIncome = groupedData[currentMonthKey]?.income || 0;
-  const totalExpense = groupedData[currentMonthKey]?.expense || 0;
+  // Calculate today's income and expense
+  const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const totalIncome = groupedData[todayKey]?.income || 0;
+  const totalExpense = groupedData[todayKey]?.expense || 0;
 
   // Calculate current balance (income - expenses)
   const balance = totalIncome - totalExpense;

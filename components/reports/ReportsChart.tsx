@@ -19,7 +19,7 @@ export default function ReportsChart({ data }: ReportsChartProps) {
   return (
     <div className='p-6 bg-white shadow-md rounded-lg'>
       <h2 className='text-xl font-bold mb-4'>Movimientos Financieros</h2>
-      <ResponsiveContainer width='100%' height={300}>
+      <ResponsiveContainer width='100%' height={300} className='text-sm p-1'>
         <BarChart data={data || []}>
           <XAxis dataKey='date' />
           <YAxis />

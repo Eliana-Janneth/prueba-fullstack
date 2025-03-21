@@ -12,11 +12,19 @@ import {
   SidebarSeparator,
 } from '@components/ui/sidebar';
 import Link from 'next/link';
-import { Users, BarChart2, LogOut, LogIn, BadgeDollarSign } from 'lucide-react';
+import {
+  Users,
+  BarChart2,
+  LogOut,
+  LogIn,
+  BadgeDollarSign,
+  Home,
+} from 'lucide-react';
 import { signIn, signOut } from 'next-auth/react';
 import { useAuth } from '@/hooks/useAuth';
 
 const menuItems = [
+  { name: 'Home', href: '/', icon: <Home /> },
   { name: 'Ingresos y Egresos', href: '/movements', icon: <BadgeDollarSign /> },
   { name: 'Usuarios', href: '/users', icon: <Users />, adminOnly: true },
   { name: 'Reportes', href: '/reports', icon: <BarChart2 />, adminOnly: true },
@@ -50,26 +58,26 @@ export default function AppSidebar() {
                   </SidebarMenuItem>
                 )
             )}
+            <SidebarMenuItem>
+              {session ? (
+                <SidebarMenuButton
+                  onClick={() => signOut({ callbackUrl: '/auth/login' })}
+                  className='flex items-center gap-2'
+                >
+                  <LogOut />
+                  <span>Cerrar Sesión</span>
+                </SidebarMenuButton>
+              ) : (
+                <SidebarMenuButton
+                  onClick={() => signIn()}
+                  className='flex items-center gap-2'
+                >
+                  <LogIn />
+                  <span>Iniciar Sesión</span>
+                </SidebarMenuButton>
+              )}
+            </SidebarMenuItem>
           </SidebarMenu>
-          <SidebarMenuItem>
-            {session ? (
-              <SidebarMenuButton
-                onClick={() => signOut({ callbackUrl: '/auth/login' })}
-                className='flex items-center gap-2'
-              >
-                <LogOut />
-                <span>Cerrar Sesión</span>
-              </SidebarMenuButton>
-            ) : (
-              <SidebarMenuButton
-                onClick={() => signIn()}
-                className='flex items-center gap-2'
-              >
-                <LogIn />
-                <span>Iniciar Sesión</span>
-              </SidebarMenuButton>
-            )}
-          </SidebarMenuItem>
         </SidebarContent>
 
         <SidebarFooter className='p-4 text-sm text-center text-gray-500'>
