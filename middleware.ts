@@ -7,5 +7,7 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ["/((?!auth/register).*)"],
+  matcher: [
+    "/((?!api/register|api/auth/.*|auth/register|_next/.*|logo.svg).*)",
+  ],
 };
