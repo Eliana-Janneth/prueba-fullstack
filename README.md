@@ -1,124 +1,123 @@
-## Prueba Técnica para Desarrollador Fullstack Senior
+# 🧾 Fullstack Income & Expense Manager
 
-### Introducción
+Este proyecto es una aplicación fullstack construida con **Next.js**, **Apollo GraphQL**, **Prisma**, **PostgreSQL** y **Auth0**. Permite gestionar ingresos y egresos, usuarios y reportes financieros.
 
-El objetivo de esta prueba técnica es evaluar tus habilidades en el desarrollo de una aplicación fullstack. Deberás implementar un sistema de gestión de ingresos y egresos, la gestión de usuarios y la generación de reportes. El proyecto cuenta con [wireframes](<https://www.figma.com/design/2PINjveveJJ9ZAAwxwNoRK/Wireframes-(Copy)?node-id=0-1&t=6q0Q0id8YnjH9fJt-1>) que pueden servir de guía para el candidato. Sin embargo, el diseño de la interfaz de usuario es libre.
+---
 
-### Requisitos del Proyecto
+## 🚀 Tecnologías principales
 
-#### Funcionalidades Principales
+- **Next.js** (Pages Router)
+- **GraphQL** con Apollo Server & Client
+- **Prisma** ORM 
+- **Supabase** (base de datos)
+- **Auth0** + NextAuth.js
+- **Tailwind CSS** + shadcn/ui
+- **Vercel** (despliegue)
 
-1. **Roles y Permisos**
+---
 
-   - **Roles:**
-     - **Usuario:** Solo puede acceder a la gestión de movimientos.
-     - **Administrador:** Puede ver los reportes, editar usuarios y agregar movimientos.
+## 📦 Requisitos
 
-2. **Home**
+- Node.js >= 18.x
+- Cuenta en [Supabase](https://supabase.com/)
+- Cuenta en [Auth0](https://auth0.com/)
+- Cuenta en [Vercel](https://vercel.com/)
 
-   - Página de inicio con un menú principal que permite la navegación a tres secciones:
-     - Sistema de gestión de ingresos y gastos (disponible para todos los roles)
-     - Gestión de usuarios (solo para administradores)
-     - Reportes (solo para administradores)
+---
 
-3. **Sistema de Gestión de Ingresos y Gastos**
+## ⚙️ Configuración local
 
-   - **Vista de Ingresos y Egresos**
-     - Implementar una tabla que muestre los ingresos y egresos registrados con las siguientes columnas:
-       - Concepto
-       - Monto
-       - Fecha
-       - Usuario
-     - Botón "Nuevo" para agregar un nuevo ingreso o egreso (solo para administradores).
-   - **Formulario de Nuevo Ingreso/Egreso**
-     - Formulario con los campos:
-       - Monto
-       - Concepto
-       - Fecha
-     - Botón para guardar el nuevo movimiento.
+### 1. Clona el repositorio
 
-4. **Gestión de Usuarios** (solo para administradores)
+```bash
+git clone https://github.com/Eliana-Janneth/prueba-fullstack.git
+cd prueba-fullstack
 
-   - **Vista de Usuarios**
-     - Tabla que muestre la lista de usuarios con las siguientes columnas:
-       - Nombre
-       - Correo
-       - Teléfono
-       - Acciones (editar usuario)
-   - **Formulario de Edición de Usuario**
-     - Formulario con los campos:
-       - Nombre
-       - Rol
-     - Botón para guardar los cambios.
+```
 
-5. **Reportes** (solo para administradores)
-   - Mostrar un gráfico de movimientos financieros.
-   - Mostrar el saldo actual.
-   - Botón para descargar el reporte en formato CSV.
+### 2. Instala las dependencias
 
-### Requisitos Técnicos
+```bash
+npm install
+```
 
-- **Tecnologías y Herramientas:**
-  - **Frontend:**
-    - Next.js utilizando `pages` router.
-    - TypeScript.
-    - Tailwind CSS.
-    - Shadcn para componentes de la interfaz de usuario.
-    - GraphQL con Apollo Client para queries y mutaciones.
-  - **Backend:**
-    - API GraphQL con Apollo Server implementada en una ruta de API de Next.js.
-    - Base de datos de Postgres en Supabase.
-  - **Protección de Datos:** 
-    - Implementar control de acceso basado en roles (RBAC) para asegurar que solo los usuarios autorizados puedan acceder a ciertas funcionalidades y datos.
-    - Proteger el backend para que rechace conexiones no autenticadas.
-  - **Autenticación:**
-    - Utilizar [Authjs](https://authjs.dev/) con [Auth0](https://auth0.com/) como proveedor y [Prisma](https://prisma.io) como adaptador para la autenticación por sesiones de base de datos.
-  - **Pruebas unitarias**
-    - El candidato debe agregar al menos 3 pruebas unitarias donde considere necesario.
-  - **Despliegue:**
-    - Desplegar el proyecto en Vercel.
+### 3. Configura las variables de entorno
 
-### Entregables
+Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables de entorno:
 
-1. **Código Fuente:**
+```bash
+NEXTAUTH_SECRET=tu_clave_secreta
+NEXTAUTH_URL=http://localhost:3000
 
-   - Repositorio en GitHub con el código fuente del proyecto.
-   - Incluir un archivo README con instrucciones claras sobre cómo ejecutar el proyecto localmente y cómo desplegarlo en Vercel.
+AUTH0_CLIENT_ID=...
+AUTH0_CLIENT_SECRET=...
+AUTH0_ISSUER=dev-xxxxxx.us.auth0.com
+AUTH0_DOMAIN=dev-xxxxxx.us.auth0.com
 
-2. **Despliegue:**
-   - Proyecto desplegado en Vercel con la URL proporcionada.
+AUTH0_CLIENT_ID_ADMIN=...
+AUTH0_CLIENT_SECRET_ADMIN=...
+AUTH0_AUDIENCE=https://dev-xxxxxx.us.auth0.com/api/v2/
 
-### Criterios de Evaluación
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/tu_base
 
-- **Funcionalidad:**
+```
 
-  - Cumplimiento de todos los requisitos funcionales.
-  - Correcta implementación del CRUD para ingresos, egresos y usuarios.
-  - Generación y descarga de reportes en formato CSV.
+Puedes obtener los valores de Auth0 en tu dashboard de aplicaciones.
 
-- **Calidad del Código:**
+### 4. Genera Prisma Client y aplica las migraciones
 
-  - Calidad y claridad del código.
-  - Uso adecuado de las mejores prácticas de desarrollo.
-  - Estructura del proyecto.
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
 
-- **Diseño y UX:**
+### 5. Inicia el servidor de desarrollo
 
-  - Usabilidad de la interfaz.
-  - Implementación de un diseño atractivo.
+```bash
+npm run dev
+```
 
-- **Pruebas y Documentación:**
+La app estará disponible en: http://localhost:3000
 
-  - Cobertura de pruebas unitarias.
-  - Calidad de los comentarios dentro del proyecto.
+---
 
-- **Seguridad:**
+## 🌐 Despliegue en Vercel
 
-  - Implementación efectiva de control de acceso basado en roles (RBAC).
-  - Protección adecuada de los datos sensibles.
+### 1. Sube tu repositorio a GitHub
 
-- **Notas**:
-  - El aplicativo no debe contener diseño responsivo.
-  - El candidato puede utilizar el código cargado en este repositorio. Sin embargo, esta no es una condición necesaria y el candidato puede iniciar el proyecto de 0 si lo desea.
-  - El candidato puede cambiar las versiones de las librerías si lo considera necesario.
-  - El candidato debe compartir el acceso al repositorio de GitHub al correo dsaldarriaga@prevalentware.com
+```bash
+git add .
+git commit -m "First deploy"
+git push origin main
+```
+
+### 2. Conecta tu repositorio a Vercel
+
+1. Ve a vercel.com
+2. Crea un nuevo proyecto importando tu repo
+3. En Settings > Environment Variables, agrega las mismas variables de tu archivo `.env`
+4. En Settings > Build & Development Settings, configura el comando de build:
+
+```bash
+npm run build
+```
+
+Y activa la opción de `Install Command`: `npm install && npx prisma generate`
+
+### 3. Despliega la app
+
+Vercel se encargará de hacer el deploy automático cada vez que subas cambios a main.
+
+---
+
+## 🛠 Mantenimiento
+
+Para revisar el esquema de la base de datos:
+
+```bash
+npx prisma studio
+```
+
+___
+## 🚀 Desarrollado por:
+Eliana Puerta Morales

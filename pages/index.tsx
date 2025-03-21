@@ -1,7 +1,9 @@
 import HomeCard from '@/components/HomeCard';
+import { useAuth } from '@/hooks/useAuth';
 import { BadgeDollarSign, ChartColumnBig, UsersRound } from 'lucide-react';
 
 export default function Home() {
+  const { isAdmin } = useAuth();
   return (
     <div className='p-6 h-full flex flex-col justify-center items-center'>
       <h1 className='text-2xl font-bold text-center'>
@@ -13,7 +15,7 @@ export default function Home() {
           icon={<BadgeDollarSign className='h-6 w-6' />}
           href='/movements'
         />
-        <HomeCard
+        {isAdmin && (<> <HomeCard
           title='Gestión de Usuarios'
           icon={<UsersRound className='h-6 w-6' />}
           href='/users'
@@ -22,7 +24,8 @@ export default function Home() {
           title='Reportes'
           icon={<ChartColumnBig className='h-6 w-6' />}
           href='/reports'
-        />
+        /></>   )}
+    
       </div>
     </div>
   );
